@@ -29,9 +29,9 @@ func (p *QPSMonitor) Update() int32 {
 
 func (p *QPSMonitor) QPS() int32 {
 	var totalCount int32 = 0
-	for i, queryCount := range p.totalQueries {
+	for i := range p.totalQueries {
 		if int32(i) != p.latestIndex {
-			totalCount += queryCount
+			totalCount += atomic.LoadInt32(&p.totalQueries[i])
 		}
 	}
 	return totalCount / (p.delaySecond - 1)
@@ -42,7 +42,7 @@ func (p *QPSMonitor) checkQPS() {
 	if p.qpsLimit > 0 {
 		for p.QPS() > p.qpsLimit {
 			time.Sleep(time.Millisecond * 10)
-            		p.Update()
+			p.Update()
 		}
 	}
 }
