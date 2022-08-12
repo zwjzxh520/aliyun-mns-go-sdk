@@ -22,7 +22,7 @@ func (p *QPSMonitor) Update() int32 {
 
 	if atomic.LoadInt32(&p.latestIndex) != index {
 		atomic.StoreInt32(&p.latestIndex, index)
-		atomic.StoreInt32(&p.totalQueries[p.latestIndex], 0)
+		atomic.StoreInt32(&p.totalQueries[index], 0)
 	}
 	return index
 }
